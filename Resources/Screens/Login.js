@@ -9,7 +9,7 @@ const imgbackground = require('../Images/backgroundApp.jpg');
 
 const Login = ({ navigation }) => {
 
-    //Use state
+    //UseState
     const [isLoading, setLoading] = useState(false);
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
@@ -18,7 +18,6 @@ const Login = ({ navigation }) => {
     const [ErrorCorreoM, setErrorCorreoM] = useState("");
     const [ErrorPassword, setErrorPassword] = useState(false);
     const [ErrorPasswordM, setErrorPasswordM] = useState("");
-
 
     useEffect(() => {
         const backAction = () => {
@@ -33,36 +32,35 @@ const Login = ({ navigation }) => {
     }, []);
 
     //Save data in AsyncStorage
-    const SaveData = async (Asyname, AsyUssername, AsyEmail, AsyRuta) => {
+    const SaveData = async (Asyname, AsyUssername, AsyEmail, AsyRuta, AsyMembresia, AsyInicio, AsyFinal) => {
         try {
             await AsyncStorage.setItem('@name', Asyname)
             await AsyncStorage.setItem('@Usser', AsyUssername)
             await AsyncStorage.setItem('@Email', AsyEmail)
             if (AsyRuta == null || AsyRuta == '') {
-                console.log("Aun no hay foto de perfil")
                 await AsyncStorage.setItem('@ruta', "N/A")
             } else {
-                console.log("Si hay imagen")
                 await AsyncStorage.setItem('@ruta', AsyRuta)
             }
-            console.log("Hecho")
+            if (AsyMembresia == null || AsyRuta == '') {
+                await AsyncStorage.setItem('@Membresia', "FALSE")
+            } else {
+                await AsyncStorage.setItem('@Membresia', AsyMembresia)
+            }
+            if (AsyInicio == null || AsyRuta == '') {
+                await AsyncStorage.setItem('@Inicio', "empty")
+            } else {
+                await AsyncStorage.setItem('@Inicio', AsyInicio)
+            }
+            if (AsyFinal == null || AsyRuta == '') {
+                await AsyncStorage.setItem('@Fin', "empty")
+            } else {
+                await AsyncStorage.setItem('@Fin', AsyFinal)
+            }
         } catch (error) {
             Alert.alert("Error" + error)
         }
     }
-
-    //Consult data from asynstorage
-    const StorageA = async () => {
-        const STName = await AsyncStorage.getItem('@name')
-        const STUsser = await AsyncStorage.getItem('@Usser')
-        const STEmail = await AsyncStorage.getItem('@Email')
-        const STRute = await AsyncStorage.getItem('@ruta')
-        console.log("data name: " + STName)
-        console.log("data usser: " + STUsser)
-        console.log("data email: " + STEmail)
-        console.log("data rute img: " + STRute)
-    }
-
 
     //Show Error
     function ShowError(key) {
@@ -81,7 +79,6 @@ const Login = ({ navigation }) => {
                 break;
         }
     }
-
 
     //Normalizar Estados
     const NormaliceStates = () => {
@@ -122,7 +119,6 @@ const Login = ({ navigation }) => {
                     })
                 }).then((response) => response.json())
                     .then((data) => {
-                        console.log(data)
                         setLoading(false)
                         if (data.Code == 0) {
                             ToastAndroid.show(data.Messaje, ToastAndroid.LONG)
@@ -133,10 +129,13 @@ const Login = ({ navigation }) => {
                             const ussername = data[0].Username
                             const usseremail = data[0].email
                             const usserruta = data[1].ruta
+                            const ussermembresia = data[2].membresia
+                            const usserinicio = data[3].fechaini
+                            const usserfinal = data[4].fechafin
                             navigation.navigate('ContainerFragment', {
                                 user: ussernamecomplet
                             })
-                            SaveData(ussernamecomplet, ussername, usseremail, usserruta)
+                            SaveData(ussernamecomplet, ussername, usseremail, usserruta, ussermembresia, usserinicio, usserfinal)
                             NormaliceStates()
                         }
                     })
@@ -181,7 +180,6 @@ const Login = ({ navigation }) => {
 
                     <View style={{ alignItems: 'center', marginBottom: 10 }}>
                         <Btn_Login text={'ENVIAR'} onPress={() => AccessAuth()} />
-                        <Btn_Login text={'VERIFICAR'} onPress={() => StorageA()} />
                         {isLoading ? <ActivityIndicator size="large" /> : null}
                     </View>
 
@@ -232,7 +230,6 @@ const styles = StyleSheet.create({
         height: 50,
         fontSize: 20,
         paddingLeft: 5,
-        // marginBottom: 15
     },
     button: {
         alignItems: 'center',
