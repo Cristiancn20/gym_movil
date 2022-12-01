@@ -3,24 +3,47 @@ import { StatusBar } from "react-native";
 import { StyleSheet, View, Button, Text, TextInput, SafeAreaView, BackHandler, Alert, Image, FlatList, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import YoutubePlayer from "react-native-youtube-iframe";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Locked = require('../../../Images/RN_Locked.png');
 
 const Rutina_Brazo_ = ({ navigation }) => {
-
+    //useState
     const [buy, setBuy] = useState(false)
+    const [Pnombre, setNombre] = useState("");
+    const [Pemail, setEmail] = useState("");
 
-    const Item = ({ Name }) => {
+
+    //function getdata
+    async function getData() {
+        const STMembresia = await AsyncStorage.getItem('@Membresia')
+        const STName = await AsyncStorage.getItem('@name')
+        const STEmail = await AsyncStorage.getItem('@Email')
+        setNombre(STName)
+        setEmail(STEmail)
+        if (STMembresia == null || STMembresia == "FALSE") {
+            setBuy(false)
+        } else {
+            setBuy(true)
+        }
+    }
+
+    //useEffect
+    useEffect(() => {
+        getData()
+    }, [])
+
+
+    const Item = ({ Name, YouTubeID }) => {
         return (
             <View style={styles.Cards}>
                 <Text style={styles.Tittle}>{Name}</Text>
-                <Text style={styles.Subtitle}>Subtitle Here</Text>
                 <View style={styles.Subcard} pointerEvents={!buy ? "none" : "auto"}>
                     <YoutubePlayer
                         height={300}
                         width={400}
                         play={false}
-                        videoId={"IHNzOHi8sJs"}
+                        videoId={YouTubeID}
                     />
                 </View>
                 {!buy ? <View style={{ height: 50, marginTop: -290, zIndex: 1, alignItems: 'center' }}>
@@ -33,12 +56,14 @@ const Rutina_Brazo_ = ({ navigation }) => {
     }
 
     const Notificacion = () => {
-        // Alert.alert("Para reproducir el video debes de adquirir una suscripción", [
-        Alert.alert("Cerrar Sesión!", "Estas seguro de cerrar Sesión?", [
+        Alert.alert("Contenido Premium", "Para reproducir el video debes de adquirir una suscripción", [
             {
                 text: "COMPRAR", onPress:
                     () => {
-                        navigation.navigate('Pago')
+                        navigation.navigate('Pago', {
+                            NameUsser: Pnombre,
+                            EmailUsser: Pemail
+                        })
                     }
             },
             {
@@ -52,23 +77,38 @@ const Rutina_Brazo_ = ({ navigation }) => {
     const Data = [
         {
             id: '1',
-            Nombre: 'Brazos flats'
+            Nombre: 'CURL PARA BÍCEPS CON BARRA OLÍMPICA',
+            Youtube: 'Ej7782EFCaA'
         },
         {
             id: '2',
-            Nombre: 'Brazos 2'
+            Nombre: 'CURL CON BARRA Z',
+            Youtube: 'Q7heKt4r5oI'
         },
         {
             id: '3',
-            Nombre: 'Brazos 2'
+            Nombre: 'CURL CON MANCUERNAS',
+            Youtube: 'HEOdWMEeVIg'
+        },
+        {
+            id: '4',
+            Nombre: 'CURL DE MARTILLO CON MANCUERNAS',
+            Youtube: '_yAKJjaeQgw'
+        },
+        {
+            id: '5',
+            Nombre: 'DOMINADAS CON AGARRE',
+            Youtube: 'lYsxkUtPwd0'
         }
 
     ]
 
     //funcion que renderiza los componentes
     const renderItem = ({ item }) => (
-        <Item Name={item.Nombre} />
+        <Item Name={item.Nombre}
+            YouTubeID={item.Youtube} />
     )
+
     return (
         <SafeAreaView style={styles.Container}>
             <View style={{ flex: 1, marginTop: 50, flexDirection: 'row' }}>
@@ -123,7 +163,7 @@ const styles = StyleSheet.create({
     },
     Tittle: {
         textAlign: 'center',
-        fontSize: 32,
+        fontSize: 25,
         marginBottom: 10
     },
     Subtitle: {
