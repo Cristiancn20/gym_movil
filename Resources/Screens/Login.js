@@ -9,7 +9,7 @@ const imgbackground = require('../Images/backgroundApp.jpg');
 
 const Login = ({ navigation }) => {
 
-    //Use state
+    //UseState
     const [isLoading, setLoading] = useState(false);
     const [Email, setEmail] = useState("");
     const [Password, setPassword] = useState("");
