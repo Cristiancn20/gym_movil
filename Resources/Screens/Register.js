@@ -160,7 +160,6 @@ const Register = ({ navigation }) => {
             setTooltipPassword(true)
         } else {
             RegisterAuth()
-            console.log('correcto')
         }
     }
 
@@ -185,7 +184,6 @@ const Register = ({ navigation }) => {
             }).then((response) => response.json())
                 .then((data) => {
                     setLoading(false)
-                    console.log(data)
                     if (data.Code == -1) {//Incorrecto
                         ToastAndroid.show(data.Messaje, ToastAndroid.LONG)
                     } else if (data.Code == 0) {//Ya existe
@@ -356,6 +354,5 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textTransform: 'uppercase',
         textAlign: 'center',
-
     }
 });
